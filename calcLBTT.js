@@ -16,19 +16,19 @@ FIRST CASE HP < £145,001 => 0*/
 
 /* BANDS */
 
-const taxFreeAmount = 145000;
-
-const firstBandTopLimit = 250000;
-const secondBandTopLimit = 325000;
-const thirdBandTopLimit = 750000;
-
-const firstBandTotal = 250000 - 145000;
-const secondBandTotal = 325000 - 250000;
-const thirdBandTotal = 750000 - 325000;
-const fourthBandLimit = 750000;
-
 function calculateLBTT(housePrice) {
   //
+  const taxFreeAmount = 145000;
+
+  const firstBandTopLimit = 250000;
+  const secondBandTopLimit = 325000;
+  const thirdBandTopLimit = 750000;
+
+  const firstBandTotal = 250000 - 145000;
+  const secondBandTotal = 325000 - 250000;
+  const thirdBandTotal = 750000 - 325000;
+  const fourthBandLimit = 750000;
+
   let remainingTaxablePortion;
 
   let taxPayable;
@@ -39,23 +39,21 @@ function calculateLBTT(housePrice) {
 
   const taxablePortion = housePrice - taxFreeAmount;
 
-  console.log(taxablePortion);
-
-  /* this is actually not a great way, should be doing conditions based on house price. as the bands are of varying sizes! 
+ /* this is actually not a great way, should be doing conditions based on house price. as the bands are of varying sizes! 
   
   NEED TO ADD BAND TOTALS TOGETHER AND COMPARE TAXABLE AMOUNT AGAINST THAT!
   define variables for these...*/
-  if (taxFreeAmount < housePrice && housePrice < firstBandTopLimit) {
+  if (taxFreeAmount < housePrice && housePrice <= firstBandTopLimit) {
     taxPayable = calcTwoPerCent(taxablePortion);
   }
 
-  if (firstBandTopLimit <= housePrice && housePrice < secondBandTopLimit) {
+  if (firstBandTopLimit <= housePrice && housePrice <= secondBandTopLimit) {
     taxPayable =
       calcTwoPerCent(firstBandTotal) +
       calcFivePerCent(taxablePortion - firstBandTotal);
   }
 
-  if (secondBandTopLimit < housePrice && housePrice < thirdBandTopLimit) {
+  if (secondBandTopLimit < housePrice && housePrice <= thirdBandTopLimit) {
     remainingTaxablePortion =
       taxablePortion - (firstBandTotal + secondBandTotal);
 
@@ -75,7 +73,7 @@ function calculateLBTT(housePrice) {
       calcTenPerCent(thirdBandTotal) +
       calcTwelvePerCent(remainingTaxablePortion);
   }
-  return taxPayable.toFixed(2); //to round to 2 D.P
+  return parseInt(taxPayable.toFixed(0)); //to round to 2 D.P toFix returns a string, this is only returning an approximation
 }
 
 /* Seperate functions for finding percentage, reusable */
@@ -95,4 +93,4 @@ function calcTwelvePerCent(number) {
   return calcTenPerCent(number) + calcTwoPerCent(number);
 }
 
-console.log(calculateLBTT(1222427.86));
+module.exports = calculateLBTT;
