@@ -17,12 +17,18 @@ FIRST CASE HP < £145,001 => 0*/
 /* BANDS */
 
 const taxFreeAmount = 145000;
+
+const firstBandTopLimit = 250000;
+const secondBandTopLimit = 325000;
+const thirdBandTopLimit = 750000;
+
 const firstBandTotal = 250000 - 145000;
 const secondBandTotal = 325000 - 250000;
 const thirdBandTotal = 750000 - 325000;
 const fourthBandLimit = 750000;
 
 function calculateLBTT(housePrice) {
+  //
   let remainingTaxablePortion;
 
   let taxPayable;
@@ -31,22 +37,25 @@ function calculateLBTT(housePrice) {
     return 0;
   }
 
-  /* 2% paid on balance between 145k and 250k */
-  //this is the portion of tax payable and will need to be broken up further
   const taxablePortion = housePrice - taxFreeAmount;
 
-  if (taxablePortion >= firstBandTotal) {
-    taxPayable = calcTwoPerCent(taxPayable);
+  console.log(taxablePortion);
+
+  /* this is actually not a great way, should be doing conditions based on house price. as the bands are of varying sizes! 
+  
+  NEED TO ADD BAND TOTALS TOGETHER AND COMPARE TAXABLE AMOUNT AGAINST THAT!
+  define variables for these...*/
+  if (taxFreeAmount < housePrice && housePrice < firstBandTopLimit) {
+    taxPayable = calcTwoPerCent(taxablePortion);
   }
 
-  /* this is actually not a great way, should be doing conditions based on house price. as the bands are of varying sizes! */
-  if (firstBandTotal <= taxablePortion && taxablePortion < secondBandTotal) {
+  if (firstBandTopLimit <= housePrice && housePrice < secondBandTopLimit) {
     taxPayable =
       calcTwoPerCent(firstBandTotal) +
       calcFivePerCent(taxablePortion - firstBandTotal);
   }
 
-  if (secondBandTotal <= taxablePortion < thirdBandTotal) {
+  if (secondBandTopLimit < housePrice && housePrice < thirdBandTopLimit) {
     remainingTaxablePortion =
       taxablePortion - (firstBandTotal + secondBandTotal);
 
@@ -86,4 +95,4 @@ function calcTwelvePerCent(number) {
   return calcTenPerCent(number) + calcTwoPerCent(number);
 }
 
-console.log(calculateLBTT(756227.86));
+console.log(calculateLBTT(1222427.86));
