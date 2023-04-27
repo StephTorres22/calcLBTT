@@ -12,38 +12,47 @@ FUNCTION TAKES HOUSE PRICE IN, RETURNS AMOUNT OF TAX TO PAY
 
 FIRST CASE HP < £145,001 => 0*/
 
-/* NEEDS TO RETURN TO TWO DECIMAL PLACES, FLOAT */
-
 /* BANDS */
 
 function calculateLBTT(housePrice) {
   //
   const taxFreeAmount = 145000;
-
-  const firstBandTopLimit = 250000;
-  const secondBandTopLimit = 325000;
-  const thirdBandTopLimit = 750000;
-
-  const firstBandTotal = 250000 - 145000;
-  const secondBandTotal = 325000 - 250000;
-  const thirdBandTotal = 750000 - 325000;
-  const fourthBandLimit = 750000;
-
   let remainingTaxablePortion;
-
-  let taxPayable;
-
+  let taxPayable = 0;
   if (housePrice <= taxFreeAmount) {
     return 0;
   }
 
-  const taxablePortion = housePrice - taxFreeAmount;
+  const bandArrays = [
+    [0, 144999, 0],
+    [145000, 250000, 0.02],
+    [250001, 325000, 0.05],
+    [325001, 750000, 0.1],
+  ];
 
- /* this is actually not a great way, should be doing conditions based on house price. as the bands are of varying sizes! 
-  
-  NEED TO ADD BAND TOTALS TOGETHER AND COMPARE TAXABLE AMOUNT AGAINST THAT!
-  define variables for these...*/
-  if (taxFreeAmount < housePrice && housePrice <= firstBandTopLimit) {
+  for (let i = 0; i < bandArrays.length; i++) {
+    let band = bandArrays[i];
+
+    if (band[0] < housePrice && housePrice <= band[1]) {
+      remainingTaxablePortion = housePrice - band[0];
+      taxPayable += remainingTaxablePortion * band[2];
+      return Math.round(taxPayable);
+    }
+
+    let bandTaxablePortion = band[1] - band[0];
+    taxPayable += bandTaxablePortion * band[2];
+
+    if (housePrice > bandArrays[3][1] && i == 3) {
+      //needs the second condition to make sure all the bands are hit.
+      remainingTaxablePortion = housePrice - bandArrays[3][1];
+      taxPayable += remainingTaxablePortion * 0.12;
+      return Math.round(taxPayable);
+    }
+  }
+
+  /*  */
+
+  /*  if (taxFreeAmount < housePrice && housePrice <= firstBandTopLimit) {
     taxPayable = calcTwoPerCent(taxablePortion);
   }
 
@@ -53,7 +62,7 @@ function calculateLBTT(housePrice) {
       calcFivePerCent(taxablePortion - firstBandTotal);
   }
 
-  if (secondBandTopLimit < housePrice && housePrice <= thirdBandTopLimit) {
+  if (secondBandTopLimit <= housePrice && housePrice <= thirdBandTopLimit) {
     remainingTaxablePortion =
       taxablePortion - (firstBandTotal + secondBandTotal);
 
@@ -63,7 +72,7 @@ function calculateLBTT(housePrice) {
       calcTenPerCent(remainingTaxablePortion);
   }
 
-  if (housePrice > fourthBandLimit) {
+  if (housePrice >= fourthBandLimit) {
     remainingTaxablePortion =
       taxablePortion - (firstBandTotal + secondBandTotal + thirdBandTotal);
 
@@ -73,11 +82,15 @@ function calculateLBTT(housePrice) {
       calcTenPerCent(thirdBandTotal) +
       calcTwelvePerCent(remainingTaxablePortion);
   }
-  return parseInt(taxPayable.toFixed(0)); //to round to 2 D.P toFix returns a string, this is only returning an approximation
+  return Math.round(taxPayable); */ //to round to 2 D.P toFix returns a string, this is only returning an approximation
+  //could use Math.round(taxPayable), rounds up and down.
+  //think gov website rounds down. .floor
+  /* https://www.stampdutycalculator.org.uk/stamp-duty-scotland.htm?utm_content=cmp-true using this and/or this
+  https://revenue.scot/calculate-tax/calculate-property-transactions#calculator for tests */
 }
 
 /* Seperate functions for finding percentage, reusable */
-function calcTwoPerCent(number) {
+/* function calcTwoPerCent(number) {
   return (number / 100) * 2;
 }
 
@@ -91,6 +104,7 @@ function calcTenPerCent(number) {
 
 function calcTwelvePerCent(number) {
   return calcTenPerCent(number) + calcTwoPerCent(number);
-}
+} */
 
+console.log(calculateLBTT(350000));
 module.exports = calculateLBTT;

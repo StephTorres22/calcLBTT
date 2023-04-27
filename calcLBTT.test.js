@@ -19,3 +19,7 @@ it("Within Third Tax Band", () => {
 it("Within Fourth Tax Band", () => {
   expect(calculateLBTT(760000)).toBe(49550);
 });
+
+
+/* https://www.stampdutycalculator.org.uk/stamp-duty-scotland.htm?utm_content=cmp-true 
+https://revenue.scot/calculate-tax/calculate-property-transactions#calculator*/
