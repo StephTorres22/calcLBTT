@@ -24,8 +24,8 @@ function calculateLBTT(housePrice) {
   }
 
   const bandArrays = [
-    [0, 144999, 0],
-    [145000, 250000, 0.02],
+    [0, 145000, 0],
+    [145001, 250000, 0.02],
     [250001, 325000, 0.05],
     [325001, 750000, 0.1],
   ];
@@ -106,5 +106,5 @@ function calcTwelvePerCent(number) {
   return calcTenPerCent(number) + calcTwoPerCent(number);
 } */
 
-console.log(calculateLBTT(350000));
+
 module.exports = calculateLBTT;
