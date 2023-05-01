@@ -19,9 +19,9 @@ function calculateLBTT(housePrice) {
   const taxFreeAmount = 145000;
   let remainingTaxablePortion;
   let taxPayable = 0;
-  if (housePrice <= taxFreeAmount) {
+  /* if (housePrice <= taxFreeAmount) {
     return 0;
-  }
+  } */
 
   const bandArrays = [
     [0, 145000, 0],
@@ -30,7 +30,35 @@ function calculateLBTT(housePrice) {
     [325001, 750000, 0.1],
   ];
 
-  for (let i = 0; i < bandArrays.length; i++) {
+  const bands = [
+    { min: 0, max: 145000, percenatage: 0 },
+    { min: 145001, max: 250000, percenatage: 0.02 },
+    { min: 250001, max: 325000, percenatage: 0.05 },
+    { min: 325001, max: 750000, percenatage: 0.1 },
+  ];
+
+  for (let i = 0; i < bands.length; i++) {
+    let band = bands[i];
+    if (band.min < housePrice && housePrice <= band.max) {
+      remainingTaxablePortion = housePrice - band.min;
+      taxPayable += remainingTaxablePortion * band.percenatage;
+      return Math.round(taxPayable);
+    }
+
+    let bandTaxablePortion = band.max - band.min;
+    taxPayable += bandTaxablePortion * band.percenatage;
+
+    if (housePrice > bands[3].max && i == 3) {
+      //needs the second condition to make sure all the bands are hit.
+      remainingTaxablePortion = housePrice - bands[3].max;
+      taxPayable += remainingTaxablePortion * 0.12;
+      return Math.round(taxPayable);
+    }
+  }
+
+  /* Not able to use a for each loop as there's no way recommended way to break out of it early when certain conditions are met.  */
+
+  /* for (let i = 0; i < bandArrays.length; i++) {
     let band = bandArrays[i];
 
     if (band[0] < housePrice && housePrice <= band[1]) {
@@ -48,7 +76,7 @@ function calculateLBTT(housePrice) {
       taxPayable += remainingTaxablePortion * 0.12;
       return Math.round(taxPayable);
     }
-  }
+  } */
 
   /*  */
 
@@ -105,6 +133,5 @@ function calcTenPerCent(number) {
 function calcTwelvePerCent(number) {
   return calcTenPerCent(number) + calcTwoPerCent(number);
 } */
-
-
+console.log(calculateLBTT(300000));
 module.exports = calculateLBTT;
